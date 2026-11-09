@@ -1,0 +1,16 @@
+server {
+  listen 80;
+  root /usr/share/nginx/html;
+  index index.html;
+
+  # Runtime config: ${BACKEND_URL} is substituted from the container env var at start-up.
+  location = /config.js {
+    default_type application/javascript;
+    add_header Cache-Control "no-store";
+    return 200 "window.APP_CONFIG = { API_URL: '${BACKEND_URL}' };";
+  }
+
+  location / {
+    try_files $uri /index.html;
+  }
+}
